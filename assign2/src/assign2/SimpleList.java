@@ -1,11 +1,13 @@
 //	Braeden Burgard
 //	1214815082
-//	Assignment 1
+//	Assignment 2
 
 //	SimpleList contains a 10-long array of integers and a variable
 //	that holds the current # of integers in the array. Methods exist
 //	to add and remove integers as if it were a queue, as well as to count or
 //	search for an integer, and a readable toString method.
+//  In assignment 2, methods to append the list, return the first/last element,
+//	and improved add/remove element functionalities were added.
 
 package assign2;
 
@@ -27,13 +29,6 @@ public class SimpleList {
 	//if the list is full after this operation, add 50% more indexes at the end of the list
 	public void add(int num)
 	{
-		for(int i = 8; i >= 0; i--)
-		{
-			list[i+1] = list[i];
-		}
-		list[0] = num;
-		count = count();
-		
 		//increase size by 50% if necessary
 		if(count == list.length)
 		{
@@ -41,6 +36,38 @@ public class SimpleList {
 			copyList(list, newList);
 			list = newList;
 		}
+		for(int i = list.length - 2; i >= 0; i--)
+		{
+			list[i+1] = list[i];
+		}
+		list[0] = num;
+		count++;
+	}
+	
+	//append an integer to the end of the list. If it is full, expand the list to make room
+	public void append(int num)
+	{
+		//increase size by 50% if necessary
+		if(count == list.length)
+		{
+			int[] newList = new int[list.length * 3 / 2];
+			copyList(list, newList);
+			list = newList;
+		}
+		list[count] = num;
+		count++;
+	}
+	
+	//return the first element of the list
+	public int first()
+	{
+		return list[0];
+	}
+	
+	//return the last element of the list
+	public int last()
+	{
+		return list[count - 1];
 	}
 	
 	//finds and removes given number, moves all others forward accordingly
@@ -51,17 +78,17 @@ public class SimpleList {
 		if(index != -1)
 		{
 			count--;
-			for(int i = index; i < 9; i++)
+			for(int i = index; i < list.length-1; i++)
 			{
 				list[i] = list[i+1];
 			}
-			list[9] = 0;
+			list[list.length - 1] = 0;
 		}
 		
-		//if list is more than 25% empty, decrease list size by 25%
+		//if list is more than 25% empty, decrease list size by 1
 		if((float)count < (float)list.length * .75)
 		{
-			int[] newList = new int[list.length * 4 / 3];
+			int[] newList = new int[list.length - 1];
 			copyList(list, newList);
 			list = newList;
 		}
@@ -117,7 +144,7 @@ public class SimpleList {
 
 	//I use this method to simplify add and remove methods
 	//It copies every element of list A into list B, up until it reaches the end of a list
-	private void copyList(int[] A, int[] B)
+	public void copyList(int[] A, int[] B)
 	{
 		for(int i = 0; i < A.length && i < B.length; i++)
 		{
