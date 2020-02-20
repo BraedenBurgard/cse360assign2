@@ -17,12 +17,14 @@ public class SimpleList {
 	private int count;
 	
 	//constructor. Makes a 10-long empty list
-	public SimpleList() {
+	public SimpleList() 
+	{
 		list = new int[10];
 		count = 0;
 	}
 	
 	//adds given number to first index, moves all others back accordingly
+	//if the list is full after this operation, add 50% more indexes at the end of the list
 	public void add(int num)
 	{
 		for(int i = 8; i >= 0; i--)
@@ -31,9 +33,18 @@ public class SimpleList {
 		}
 		list[0] = num;
 		count = count();
+		
+		//increase size by 50% if necessary
+		if(count == list.length)
+		{
+			int[] newList = new int[list.length * 3 / 2];
+			copyList(list, newList);
+			list = newList;
+		}
 	}
 	
 	//finds and removes given number, moves all others forward accordingly
+	//if the list is more than 25% empty afterwards, 
 	public void remove(int num)
 	{
 		int index = search(num);
@@ -46,6 +57,14 @@ public class SimpleList {
 			}
 			list[9] = 0;
 		}
+		
+		//if list is more than 25% empty, decrease list size by 25%
+		if((float)count < (float)list.length * .75)
+		{
+			int[] newList = new int[list.length * 4 / 3];
+			copyList(list, newList);
+			list = newList;
+		}
 	}
 	
 	//counts how many integers are currently in the array
@@ -54,7 +73,7 @@ public class SimpleList {
 		//count2 is a temporary variable
 		//it will hold a recalculated value of count
 		int count2 = 0;
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < list.length; i++)
 		{
 			if(list[i] != 0)
 			{
@@ -88,7 +107,7 @@ public class SimpleList {
 		{
 			if(list[i] == num) 
 			{
-				//return the index of the FIRST occurence of the given number
+				//return the index of the FIRST occurrence of the given number
 				return i;
 			}
 		}
@@ -96,6 +115,16 @@ public class SimpleList {
 		return -1;
 	}
 
+	//I use this method to simplify add and remove methods
+	//It copies every element of list A into list B, up until it reaches the end of a list
+	private void copyList(int[] A, int[] B)
+	{
+		for(int i = 0; i < A.length && i < B.length; i++)
+		{
+			B[i] = A[i];
+		}
+	}
+	
 	//returns the entire array. Used for testing only
 	public int[] getList()
 	{
